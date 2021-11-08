@@ -63,8 +63,9 @@ make distclean
     --prefix=/ \
     --disable-static \
     --target=${LFS_TGT}
-make -j &&
+make -j${JOBS} &&
 DESTDIR=${LFS}/targetfs make install-libs
+#read -n 1 -p "Musl installed"
 popd
 
 
@@ -73,7 +74,7 @@ echo "Installing busybox"
 BUSYBOX_VER="1.34.1"
 tar -xjf busybox-${BUSYBOX_VER}.tar.bz2
 pushd busybox-${BUSYBOX_VER}
-make distclean 
+make mrproper
 make ARCH="${LFS_ARCH}" defconfig
 sed -i 's/\(CONFIG_\)\(.*\)\(INETD\)\(.*\)=y/# \1\2\3\4 is not set/g' .config
 sed -i 's/\(CONFIG_IFPLUGD\)=y/# \1 is not set/g' .config
@@ -81,13 +82,14 @@ sed -i 's/\(CONFIG_FEATURE_WTMP\)=y/# \1 is not set/g' .config
 sed -i 's/\(CONFIG_FEATURE_UTMP\)=y/# \1 is not set/g' .config
 sed -i 's/\(CONFIG_UDPSVD\)=y/# \1 is not set/g' .config
 sed -i 's/\(CONFIG_TCPSVD\)=y/# \1 is not set/g' .config
-make ARCH="${LFS_ARCH}" CROSS_COMPILE="${LFS_TGT}-" -j &&
+make ARCH="${LFS_ARCH}" CROSS_COMPILE="${LFS_TGT}-" -j${JOBS} &&
 make ARCH="${LFS_ARCH}" \
     CROSS_COMPILE="${LFS_TGT}-" \
     CONFIG_PREFIX="${LFS}/targetfs" install
 # For kernel with modules
 cp examples/depmod.pl ${TOOLS}/bin/ 
 chmod 755 ${TOOLS}/bin/depmod.pl
+#read -n 1 -p "Busybox installed"
 popd
 
 
@@ -97,8 +99,11 @@ IANA_VER="2.30"
 tar -xjf iana-etc-${IANA_VER}.tar.bz2
 pushd iana-etc-${IANA_VER}
 make get 
-make STRIP=yes -j 
+make distclean
+make STRIP=yes -j${JOBS} 
 make DESTDIR=${LFS}/targetfs install
+#read -n 1 -p "iana-etc installed"
+popd
 
 
 

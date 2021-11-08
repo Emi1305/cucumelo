@@ -243,7 +243,7 @@ down https://www.mpfr.org/mpfr-4.1.0/mpfr-4.1.0.tar.xz.sig
 #down https://github.com/facebook/zstd/releases/download/v1.5.0/zstd-1.5.0.tar.gz
 #down https://github.com/facebook/zstd/releases/download/v1.5.0/zstd-1.5.0.tar.gz.sig
 echo "Downloading Musl (Latest)"
-down http://www.musl-libc.org/releases/musl-latest.tar.gz
+down http://www.musl-libc.org/releases/musl-1.1.16.tar.gz
 echo "Downloading busybox"
 down https://busybox.net/downloads/busybox-1.34.1.tar.bz2
 down https://busybox.net/downloads/busybox-1.34.1.tar.bz2.sig

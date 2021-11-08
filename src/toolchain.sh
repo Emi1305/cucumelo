@@ -24,7 +24,7 @@ pushd linux-${ver};
 echo "Making headers";
 make mrproper;
 #make ARCH=${LFS_ARCH} headers_check;
-make ARCH=${LFS_ARCH} INSTALL_HDR_PATH=${TOOLS}/${LFS_TGT} headers_install;
+make ARCH=${LFS_ARM_ARCH} INSTALL_HDR_PATH=${TOOLS}/${LFS_TGT} headers_install;
 echo "Done";
 popd;
 
@@ -37,6 +37,7 @@ xz binutils-${ver}.tar.xz
 pushd binutils-${ver}
 mkdir build
 pushd build
+make clean
 ../configure --prefix=${TOOLS} \
     --with-sysroot=${TOOLS}/${LFS_TGT} \
     --target=${LFS_TGT} \
@@ -44,13 +45,13 @@ pushd build
     --disable-multilib \
     --disable-werror 
 make configure-host &&
-make -j && 
+make -j${JOBS} && 
 make install 
 echo "Done"
 popd
 popd
 
-read -n 1 -p "Binutils done" i
+#read -n 1 -p "Binutils done" i
 
 # GCC
 echo "GCC"
@@ -82,6 +83,7 @@ popd
 echo "Configure";
 mkdir gccbuilder;
 pushd gccbuilder;
+make distclean
 ${SRCDIR}/configure --prefix=${TOOLS} \
     --host=$(uname -m)-pc-linux-gnu \
     --build=$(uname -m)-pc-linux-gnu \
@@ -102,22 +104,23 @@ ${SRCDIR}/configure --prefix=${TOOLS} \
     --disable-libvtv \
     --disable-libstdcxx \
     --disable-libmudflap \
-    --with-float=${LFS_FLOAT} \
     --enable-languages=c \
     --with-mpfr=${SRCDIR}/mpfr \
     --with-mpc=${SRCDIR}/mpc \
-    --with-gmp=${SRCDIR}/gmp \
-    --with-fpu=${LFS_FPU} \
+    --with-gmp=${SRCDIR}/gmp 
+    # --with-fpu=${LFS_FPU} 
+    # --with-float=${LFS_FLOAT} \
     # --with-glibc-version=${GLIBC_VER} \
     # --with-arch=arm \
     # --with-mpfr-include=${SRCDIR}/mpfr/src \
     # --with-mpfr-lib=${SRCDIR}/mpfr/src/.libs \
-make all-gcc all-target-libgcc &&
+make -j${JOBS} all-gcc &&
+make -j${JOBS} all-target-libgcc &&
 make install-gcc install-target-libgcc
 echo "Done";
 popd;
 
-read -n 1 -p "GCC1 done" i
+#read -n 1 -p "GCC1 done" i
 
 echo "musl"
 echo "Extracting"
@@ -125,13 +128,14 @@ ver=1.1.16
 gz musl-${ver}.tar.gz
 pushd musl-${ver}
 echo "Configuring"
+make distclean
 ./configure CROSS_COMPILE=${LFS_TGT}- \
     --prefix=/ \
     --target=${LFS_TGT} 
 make &&
 DESTDIR=${TOOLS}/${LFS_TGT} make install
 popd
-read -n 1 -p "musl done" i
+#read -n 1 -p "musl done" i
 
 
 echo "GCC Final"
@@ -164,6 +168,7 @@ mkdir gccbuild
 pushd gccbuild
 
 echo "Configure"
+make distclean
 # TODO: Re-enable the libsanitizer, currently it throws an error when it tries to compile using musl as it can't find the fstab.h file
 # Similar error can be found on the Gentoo bugtracker: https://bugs.gentoo.org/713072
 ${SRCDIR}/configure --prefix=${TOOLS} \
@@ -180,14 +185,15 @@ ${SRCDIR}/configure --prefix=${TOOLS} \
     --with-mpc=${SRCDIR}/mpc \
     --with-mpfr=${SRCDIR}/mpfr \
     --with-gmp=${SRCDIR}/gmp \
-    --with-float=${LFS_FLOAT} \
-    --with-fpu=${LFS_FPU} \
     --disable-libsanitizer 
+    # --with-fpu=${LFS_FPU} \
+    #--with-float=${LFS_FLOAT} \
     # --with-arch=armv71 \
     # --with-mpfr-include=${SRCDIR}/mpfr/src \
     # --with-mpfr-lib=${SRCDIR}/mpfr/src/.libs \
-make -j &&
+make -j${JOBS} &&
 make install
 echo "Done";
 popd;
-read -n 1 -p "GCC2 done" i
+#read -n 1 -p "GCC2 done" i
+popd;
