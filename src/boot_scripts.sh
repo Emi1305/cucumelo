@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cat > ${LFS}/targetfs/etc/mdev.conf<< "EOF"
+cat > ${TGTFS}/etc/mdev.conf<< "EOF"
 # /etc/mdev/conf
 
 # Devices:
@@ -108,7 +108,7 @@ hpilo!(.*)      root:root 0660 =hpilo/%1
 xvd[a-z]        root:root 0660 */lib/mdev/xvd_links
 EOF
 
-cat > ${LFS}/targetfs/etc/profile << "EOF"
+cat > ${TGTFS}/etc/profile << "EOF"
 # /etc/profile
 
 # Set the initial path
@@ -131,7 +131,7 @@ export EDITOR='/bin/vi'
 # End /etc/profile
 EOF
 
-cat > ${LFS}/targetfs/etc/inittab<< "EOF"
+cat > ${TGTFS}/etc/inittab<< "EOF"
 # /etc/inittab
 
 ::sysinit:/etc/rc.d/startup
@@ -152,21 +152,21 @@ tty6::respawn:/sbin/getty 38400 tty6
 ::ctrlaltdel:/sbin/reboot
 EOF
 
-echo "[Cucumelo]" > ${LFS}/targetfs/etc/hostname
+echo "[Cucumelo]" > ${TGTFS}/etc/hostname
 
-cat > ${LFS}/targetfs/etc/hosts << "EOF"
+cat > ${TGTFS}/etc/hosts << "EOF"
 127.0.0.1 localhost
 EOF
 
-mkdir -pv ${LFS}/targetfs/etc/network/if-{post-{up,down},pre-{up,down},up,down}.d
-mkdir -pv ${LFS}/targetfs/usr/share/udhcpc
+mkdir -pv ${TGTFS}/etc/network/if-{post-{up,down},pre-{up,down},up,down}.d
+mkdir -pv ${TGTFS}/usr/share/udhcpc
 
-cat > ${LFS}/targetfs/etc/network/interfaces << "EOF"
+cat > ${TGTFS}/etc/network/interfaces << "EOF"
 auto eth0
 iface eth0 inet dhcp
 EOF
 
-cat > ${LFS}/targetfs/usr/share/udhcpc/default.script << "EOF"
+cat > ${TGTFS}/usr/share/udhcpc/default.script << "EOF"
 #!/bin/sh
 # udhcpc Interface Configuration
 # Based on http://lists.debian.org/debian-boot/2002/11/msg00500.html
@@ -207,4 +207,4 @@ esac
 exit 0
 EOF
 
-chmod +x ${LFS}/targetfs/usr/share/udhcpc/default.script
+chmod +x ${TGTFS}/usr/share/udhcpc/default.script

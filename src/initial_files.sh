@@ -1,10 +1,10 @@
 #!/bin/sh
 
 # /proc/mounts -> /etc/mtab
-ln -sf ../proc/mounts ${LFS}/targetfs/etc/mtab
+ln -sf ../proc/mounts ${TGTFS}/etc/mtab
 
 # /etc/passwd
-cat << EOF > ${LFS}/targetfs/etc/passwd
+cat << EOF > ${TGTFS}/etc/passwd
 root::x:0:0:root:/root:/bin/ash
 bin:x:1:1:bin:/bin:/bin/false
 daemon:x:2:6:daemon:/sbin:/bin/false
@@ -18,7 +18,7 @@ nobody:x:65534:65534:nobody:/:/bin/false
 EOF
 
 # /etc/group
-cat << EOF > ${LFS}/targetfs/etc/group
+cat << EOF > ${TGTFS}/etc/group
 root:x:0:
 bin:x:1:
 sys:x:2:
@@ -47,9 +47,9 @@ nobody:x:65534:
 EOF
 
 # libgcc
-cp ${TOOLS}/${LFS_TGT}/lib/libgcc_s.so.1 ${LFS}/targetfs/lib/
+cp ${TOOLS}/${LFS_TGT}/lib/libgcc_s.so.1 ${TGTFS}/lib/
 # Options strip
-# ${TOOLS}/bin/${LFS_TGT}-strip ${LFS}/targetfs/lib/libgcc_s.so.1
+# ${TOOLS}/bin/${LFS_TGT}-strip ${TGTFS}/lib/libgcc_s.so.1
 
 pushd ${SOURCES}
 
@@ -64,7 +64,7 @@ make distclean
     --disable-static \
     --target=${LFS_TGT}
 make -j${JOBS} &&
-DESTDIR=${LFS}/targetfs make install-libs
+DESTDIR=${TGTFS} make install-libs
 #read -n 1 -p "Musl installed"
 popd
 
@@ -85,7 +85,7 @@ sed -i 's/\(CONFIG_TCPSVD\)=y/# \1 is not set/g' .config
 make ARCH="${LFS_ARCH}" CROSS_COMPILE="${LFS_TGT}-" -j${JOBS} &&
 make ARCH="${LFS_ARCH}" \
     CROSS_COMPILE="${LFS_TGT}-" \
-    CONFIG_PREFIX="${LFS}/targetfs" install
+    CONFIG_PREFIX="${TGTFS}" install
 # For kernel with modules
 cp examples/depmod.pl ${TOOLS}/bin/ 
 chmod 755 ${TOOLS}/bin/depmod.pl
@@ -101,7 +101,7 @@ pushd iana-etc-${IANA_VER}
 make get 
 make distclean
 make STRIP=yes -j${JOBS} 
-make DESTDIR=${LFS}/targetfs install
+make DESTDIR=${TGTFS} install
 #read -n 1 -p "iana-etc installed"
 popd
 

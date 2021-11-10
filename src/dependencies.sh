@@ -249,4 +249,7 @@ down https://busybox.net/downloads/busybox-1.34.1.tar.bz2
 down https://busybox.net/downloads/busybox-1.34.1.tar.bz2.sig
 echo "Downloading iana-etc"
 down http://sethwklein.net/iana-etc-2.30.tar.bz2
+echo "Downloading bootscripts"
+down https://github.com/cross-lfs/bootscripts-embedded/archive/master.tar.gz
+mv master.tar.gz bootscripts.tar.gz
 popd;
