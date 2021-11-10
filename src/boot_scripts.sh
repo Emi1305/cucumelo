@@ -152,7 +152,7 @@ tty6::respawn:/sbin/getty 38400 tty6
 ::ctrlaltdel:/sbin/reboot
 EOF
 
-echo "[Cucumelo]" > ${TGTFS}/etc/hostname
+echo "[Cucumelo]" > ${TGTFS}/etc/HOSTNAME
 
 cat > ${TGTFS}/etc/hosts << "EOF"
 127.0.0.1 localhost
