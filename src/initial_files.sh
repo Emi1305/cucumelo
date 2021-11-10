@@ -5,7 +5,7 @@ ln -sf ../proc/mounts ${TGTFS}/etc/mtab
 
 # /etc/passwd
 cat << EOF > ${TGTFS}/etc/passwd
-root::x:0:0:root:/root:/bin/ash
+root:x:0:0:root:/root:/bin/ash
 bin:x:1:1:bin:/bin:/bin/false
 daemon:x:2:6:daemon:/sbin:/bin/false
 adm:x:3:16:adm:/var/adm:/bin/false
