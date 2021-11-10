@@ -35,4 +35,5 @@ mkdir -p ${TGTFS}/usr/local/share
 mkdir -p ${TGTFS}/usr/local/src
 install -d -m 0750 ${TGTFS}/root
 install -d -m 1777 ${TGTFS}/tmp
-install -d -m 1777 ${TGTFS}/var/tmp
+#install -d -m 1777 ${TGTFS}/var/tmp
+ln -s ../tmp ${TGTFS}/var/tmp
