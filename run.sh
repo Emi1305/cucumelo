@@ -26,4 +26,5 @@ mkdir -pv ${LFS}
 . src/initial_files.sh
 . src/boot.sh
 . src/boot_scripts.sh
+. src/copy_banner.sh
 . src/edit_permissions.sh
